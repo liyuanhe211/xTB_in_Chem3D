@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 __author__ = 'LiYuanhe'
 
+import os.path
 import shutil
+import subprocess
+import ctypes
 import sys
 import time
 
@@ -19,7 +22,7 @@ solvent = "CH2Cl2"
 
 
 # Test this program like:
-# python Process_Job.py "E:\My_Program\xTB_in_Chem3D\example.mop" "example" "C:\Program Files\MOPAC\Process_Job.exe""
+# python Process_Job.py "E:\My_Program\xTB_in_Chem3D\Tests\ethane.mop" "ethane" "E:\My_Program\xTB_in_Chem3D\Process_Job.py"
 
 def open_gjf_with_Chem3D(file_path):
     def find_window_by_process_name(process_name):
@@ -61,7 +64,11 @@ def open_gjf_with_Chem3D(file_path):
     hwnd = find_window_by_process_name("chem3d.exe")
     if hwnd:
         print("Chem3D window found. Bringing it to the foreground.")
-        win32gui.SetForegroundWindow(hwnd)
+        try:
+            win32gui.SetForegroundWindow(hwnd)
+            ctypes.windll.user32.SetForegroundWindow(hwnd)
+        except Exception as e:
+            print("Failed to bring Chem3D window to foreground")
     else:
         print("Unable to find Chem3D window.")
         return
@@ -78,6 +85,8 @@ def open_gjf_with_Chem3D(file_path):
     # Press Enter to open the file
     keyboard.send('enter')
 
+    print("\n\nIf the output file is not opened in Chem3D, you can open it manually:\n"+file_path+"\n\n\n")
+
 
 def call_xtb(mopac_file, output_folder):
     xTB_run_path = filename_remove_append(temp_input_file)
@@ -87,18 +96,48 @@ def call_xtb(mopac_file, output_folder):
 
     charge = 0
     multiplicity = 1
+    GFN_label = "GFN2"
+    GFN = ["--gfn", "2"]
 
     mopac_file_content = open(mopac_file).read().splitlines()
-    charge_re_ret = re.findall(r"charge\=(\d+)", mopac_file_content[0].lower())
+
+    command_line = mopac_file_content[0].lower()
+    charge_re_ret = re.findall(r"charge\=(-*\d+)", command_line)
+    is_triplet = "triplet" in command_line
+    MS_setting = re.findall(r"ms\=(-*\d+\.*\d*)", command_line)
+    if MS_setting:
+        multiplicity = int(abs(float(MS_setting[0])) * 2 + 1)
+    if MS_setting and is_triplet:
+        print("\n\nYou should not set MS and TRIPLET at the same time.\n\n")
+        sys.exit(1)
+    GFN_keywords = {"GFN2": ["--gfn", "2"],
+                    "GFN1": ["--gfn", "1"],
+                    "GFN0": ["--gfn", "0"],
+                    "GFNFF": ["--gfnff"]}
+    for i in GFN_keywords:
+        if i.lower() in command_line:
+            GFN_label = i
+            GFN = GFN_keywords[i]
+
     if charge_re_ret:
         charge = int(charge_re_ret[0])
     regex_pattern = r"^([A-Z][a-z]{0,2})\s+(-*\d+\.\d*)\s+\d+\s+(-*\d+\.\d*)\s+\d+\s+(-*\d+\.\d*)"
     coordinates = []
+    elements = []
     for i in mopac_file_content:
         if re_ret := re.findall(regex_pattern, i):
             re_ret = re_ret[0]
             if re_ret[0] in element_to_num_dict:
+                elements.append(element_to_num_dict[re_ret[0]])
                 coordinates.append(re_ret)
+
+    total_electron = sum(elements) - charge
+    if total_electron % 2 == 1:
+        multiplicity = 2
+    if is_triplet:
+        multiplicity = 3
+
+    print(f"Charge: {charge}; Multiplicity: {multiplicity}")
 
     xyz_file_content = f"{len(coordinates)}\n{mopac_file}\n" + "\n".join("\t".join(atom) for atom in coordinates) + '\n'
     with open(xyz_filepath, 'w') as xyz_filepath_object:
@@ -109,14 +148,19 @@ def call_xtb(mopac_file, output_folder):
     os.chdir(xTB_run_path)
 
     print("Running for:", out_file, "...")
-    xTB_command = [xTB_bin, xyz_filepath, '--opt', "--chrg", str(charge), "--alpb", solvent, '--uhf', str(multiplicity - 1)]
+    xTB_command = [xTB_bin, xyz_filepath, '--opt', 'vtight', "--chrg", str(charge), "--alpb", solvent, '--uhf', str(multiplicity - 1)] + GFN
     print("Command args:", " ".join(xTB_command))
 
     # 不知道如何同时输出到stdout和file stream，反正很快，直接跑两遍算了
-    process = subprocess.Popen(xTB_command, stdout=open(out_file,'w'))
+    process = subprocess.Popen(xTB_command, stdout=open(out_file, 'w'))
     subprocess.call(xTB_command)
 
     process.wait()
+
+    if not os.path.isfile(xtbopt_xyz_file):
+        print("\n\n\nxTB calculation failed.\n\n")
+        sys.exit(1)
+
     with open(xtbopt_xyz_file) as xtbopt_xyz_file_object:
         xtbopt_xyz_file_content = xtbopt_xyz_file_object.read().splitlines()
 
@@ -130,15 +174,20 @@ def call_xtb(mopac_file, output_folder):
         output_coordinate_lines.append(line)
     if electronic_energy is None:
         raise Exception("Electronic Energy Not Found.")
-    out_gjf_filename = filename_stem(mopac_file)
-    out_gjf_filename = out_gjf_filename.split('_xTB')[0]
-    out_gjf_filename = os.path.join(output_folder,
-                                    out_gjf_filename + '_xTB_' + readable_timestamp() + "_" + "[E = {:.1f}".format(electronic_energy) + " J]" + ".gjf")
+    out_xyz_filename = os.path.join(output_folder,
+                                    input_filename_stem +
+                                    "_[" + GFN_label + " = {:.1f}".format(electronic_energy) + f" kJ_mol]_[Chg {charge}]_[Mult {multiplicity}].xyz")
 
-    with open(out_gjf_filename, 'w') as output_gjf_file_object:
-        output_gjf_file_object.write(f"#p\n\ntitle\n\n{charge} {multiplicity}\n" + "\n".join(reversed(output_coordinate_lines)))
+    with open(out_xyz_filename, 'w') as output_gjf_file_object:
+        output_gjf_file_object.write(f"{len(output_coordinate_lines)}\n\n"+
+                                     "\n".join(reversed(output_coordinate_lines)))
 
-    return out_gjf_filename, out_file
+    out_sdf_filename = filename_replace_last_append(out_xyz_filename,'sdf')
+    print("Output SDF file:", out_sdf_filename)
+    os.environ['BABEL_DATADIR'] = os.path.join(executable_directory,"OpenBabel",'data')
+    subprocess.call([os.path.join(executable_directory,"OpenBabel",'obabel.exe'),'-ixyz',out_xyz_filename,"-osdf",'-O',out_sdf_filename])
+
+    return out_sdf_filename, out_file
 
 
 if __name__ == '__main__':
@@ -150,6 +199,10 @@ if __name__ == '__main__':
         temp_input_file = sys.argv[1]
         input_filename_stem = sys.argv[2]
         executable_directory = filename_parent(sys.argv[3])
+
+    print("Temporary input file:",temp_input_file)
+    print("Input filename stem:",input_filename_stem)
+    print("Executable directory:", executable_directory)
 
     temp_folder = filename_parent(temp_input_file)
     output_directory = filename_parent(temp_folder)

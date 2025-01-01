@@ -2,13 +2,14 @@
 __author__ = 'LiYuanhe'
 
 import os.path
+import re
 import sys
 
 from Python_Lib.My_Lib_Stock import *
 from Python_Lib.My_Lib_File import filename_parent, filename_stem
 
 home_directory = os.path.expanduser("~")
-temp_directory = os.path.join(home_directory, "xTB_in_Chem3D", 'temp')
+temp_directory = os.path.join(home_directory, 'Documents', "xTB_in_Chem3D", 'temp')
 executable_directory = filename_parent(sys.argv[0])
 os.chdir(executable_directory)  # 否则pwd会在chem3d.exe的目录下
 os.makedirs(temp_directory, exist_ok=True)
@@ -42,7 +43,7 @@ random_int = str(random.randint(100, 900))
 if __name__ == '__main__':
     input_filepath = filename_parent(sys.argv[1])
     input_filename_stem = filename_stem(sys.argv[1])
-
+    input_filename_stem = re.sub(r"\[.+\]", "", input_filename_stem)
     temp_input_file = os.path.join(temp_directory, 'temp_xTB_in_Chem3D_[' + input_filename_stem + "]_" + readable_timestamp() +
                                    "_" + random_int + '.mop')
 
