@@ -1,0 +1,9 @@
+prefix=c:/
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: cpx
+Description: xtb: cpx
+Version: 1.0.0
+Libs: -L${libdir} -lcpx
+Cflags: -I${includedir} -I${includedir}/cpx/intel-cl-2021.8.0 /Qopenmp

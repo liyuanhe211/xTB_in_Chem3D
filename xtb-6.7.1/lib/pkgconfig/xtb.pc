@@ -1,0 +1,9 @@
+prefix=c:/
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: xtb
+Description: Semiempirical Extended Tight-Binding Program Package
+Version: 6.7.1pre
+Libs: -L${libdir} -lxtb
+Cflags: -I${includedir}
