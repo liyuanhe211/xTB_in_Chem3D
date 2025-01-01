@@ -12,10 +12,9 @@ This program integrates xTB optimization into Chem3D by repurposing the MOPAC me
 
 ## How to use
 
-[![Video Example](https://raw.githubusercontent.com/liyuanhe211/xTB_in_Chem3D/branch/Images/Recording.jpg)](https://raw.githubusercontent.com/liyuanhe211/xTB_in_Chem3D/branch/Images/Recording.mp4)
 
-* Confirm that `MOPAC in ChemDraw` is not a requirement for your work.
-* Install the program using the [installer](https://github.com/liyuanhe211/xTB_in_Chem3D/releases/latest) provided in the release.
+* Confirm that `MOPAC in ChemDraw` is not a requirement for your work as it will be OVERWRITTEN.
+* Install the program using the installer provided in the [release](https://github.com/liyuanhe211/xTB_in_Chem3D/releases/latest).
 * Draw any structure in ChemDraw, optionally optimize with MMFF94 or MM2.
 * In the menu: `Calculations` → `MOPAC Interface` → `Minimize` → `Run`.
 * A CMD window will pop up, wait for the process to finish. Upon completion, the results will be displayed automatically:
@@ -23,11 +22,13 @@ This program integrates xTB optimization into Chem3D by repurposing the MOPAC me
   * The structure's geometry will be displayed in Chem3D.
   * The electronic energy will be **indicated in the filename** in kJ/mol. 
 
+https://github.com/user-attachments/assets/5a562413-aa36-4d7d-9a75-e1283dfdc2e4
+
 ## Advanced options
 
 Prior to running the job, specific keywords can be added to the "General" input tab of the MOPAC interface. For instance, the keyword shown below sets the charge to -5, the multiplicity to quartet, and use the GFN1 level of calculation:
 
-<p align="center"><img src="Images/Custom_Input.png" width=303 /></p>
+<p align="center"><img src="Images/Custom_Input.png" width=503 /></p>
 
 ### Setting multiplicity 
 
@@ -75,7 +76,7 @@ Chem3D have an automatic rectification feature that adds hydrogen atoms where it
 
 This function can be disabled by navigating the menu: `File` → `Model Settings` → `Model Building`  → `Rectify` and selecting `Make as Default`.
 
-<p align="center"><img src="Images/Turn_off_Rectification.png" width=303 /></p>
+<p align="center"><img src="Images/Turn_off_Rectification.png" width=503 /></p>
 
 ## Version History
 
