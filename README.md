@@ -4,6 +4,12 @@
 
 [Download the installer](https://github.com/liyuanhe211/xTB_in_Chem3D/releases/download/0.1/xTB_in_Chem3D.0.1.exe).
 
+## Requirement
+
+You need to install the "Ultra" version of Chem3D. The other versions don't have the MOPAC interface. 
+
+The program has been tested on Chem3D 2022 Ultra 22.0.0.22.
+
 ## Features
 
 The MM2 Optimization button in Chem3D is probably the most wildly used computational tool among chemists. However, it's often incorrectly interpreted by those who are not experts in computational chemistry, leading to misconceptions about its energy implications. Many fail to acknowledge its constraints, such as its inability to accommodate topology changes and the absence of parameters for different atom types.
