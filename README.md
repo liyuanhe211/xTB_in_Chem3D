@@ -8,7 +8,7 @@
 
 You need to install the "Ultra" version of Chem3D. The other versions don't have the MOPAC interface. 
 
-The program has been tested on Chem3D 2022 Ultra 22.0.0.22.
+The program was tested on Chem3D 22.0.0.22 Ultra (2022).
 
 ## Features
 
