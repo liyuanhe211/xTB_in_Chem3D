@@ -85,7 +85,7 @@ def open_gjf_with_Chem3D(file_path):
     # Press Enter to open the file
     keyboard.send('enter')
 
-    print("\n\nIf the output file is not opened in Chem3D, you can open it manually:\n"+file_path+"\n\n\n")
+    print("\n\nIf the output file is not opened in Chem3D, you can open it manually:\n" + file_path + "\n\n\n")
 
 
 def call_xtb(mopac_file, output_folder):
@@ -148,7 +148,7 @@ def call_xtb(mopac_file, output_folder):
     os.chdir(xTB_run_path)
 
     print("Running for:", out_file, "...")
-    xTB_command = [xTB_bin, xyz_filepath, '--opt', 'vtight', "--chrg", str(charge), "--alpb", solvent, '--uhf', str(multiplicity - 1)] + GFN
+    xTB_command = [xTB_bin, xyz_filepath, '--opt', 'vtight', "--chrg", str(charge), "--alpb", solvent, '--uhf', str(multiplicity - 1), "--molden"] + GFN
     print("Command args:", " ".join(xTB_command))
 
     # 不知道如何同时输出到stdout和file stream，反正很快，直接跑两遍算了
@@ -179,13 +179,13 @@ def call_xtb(mopac_file, output_folder):
                                     "_[" + GFN_label + " = {:.1f}".format(electronic_energy) + f" kJ_mol]_[Chg {charge}]_[Mult {multiplicity}].xyz")
 
     with open(out_xyz_filename, 'w') as output_gjf_file_object:
-        output_gjf_file_object.write(f"{len(output_coordinate_lines)}\n\n"+
+        output_gjf_file_object.write(f"{len(output_coordinate_lines)}\n\n" +
                                      "\n".join(reversed(output_coordinate_lines)))
 
-    out_sdf_filename = filename_replace_last_append(out_xyz_filename,'sdf')
+    out_sdf_filename = filename_replace_last_append(out_xyz_filename, 'sdf')
     print("Output SDF file:", out_sdf_filename)
-    os.environ['BABEL_DATADIR'] = os.path.join(executable_directory,"OpenBabel",'data')
-    subprocess.call([os.path.join(executable_directory,"OpenBabel",'obabel.exe'),'-ixyz',out_xyz_filename,"-osdf",'-O',out_sdf_filename])
+    os.environ['BABEL_DATADIR'] = os.path.join(executable_directory, "OpenBabel", 'data')
+    subprocess.call([os.path.join(executable_directory, "OpenBabel", 'obabel.exe'), '-ixyz', out_xyz_filename, "-osdf", '-O', out_sdf_filename])
 
     return out_sdf_filename, out_file
 
@@ -200,8 +200,8 @@ if __name__ == '__main__':
         input_filename_stem = sys.argv[2]
         executable_directory = filename_parent(sys.argv[3])
 
-    print("Temporary input file:",temp_input_file)
-    print("Input filename stem:",input_filename_stem)
+    print("Temporary input file:", temp_input_file)
+    print("Input filename stem:", input_filename_stem)
     print("Executable directory:", executable_directory)
 
     temp_folder = filename_parent(temp_input_file)
