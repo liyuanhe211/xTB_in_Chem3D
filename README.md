@@ -2,7 +2,7 @@
 
 ## Download
 
-[Download the installer](https://github.com/liyuanhe211/xTB_in_Chem3D/releases/download/0.1/xTB_in_Chem3D.0.1.exe).
+[Download the installer](https://github.com/liyuanhe211/xTB_in_Chem3D/releases/download/0.1.1/xTB_in_Chem3D.0.1.1.exe)
 
 ## Requirement
 
@@ -88,13 +88,21 @@ This is not an issue. The bond order between two atoms is an artificial concept 
 
 * Extra hydrogen atoms when opening output files
 
-Chem3D have an automatic rectification feature that adds hydrogen atoms where it deems appropriate, resulting in the display of extra hydrogens where they don't actually exist. 
+Chem3D have an automatic rectification feature that adds hydrogen atoms where it deems appropriate, resulting in the display of extra hydrogens where they don't actually exist. This only happens to structures like metal complexes, radicals, etc. 
 
-This function can be disabled by navigating the menu: `File` → `Model Settings` → `Model Building`  → `Rectify` and selecting `Make as Default`.
+This function can be disabled by navigating the menu: `File` → `Model Settings` → `Model Building`  → `Rectify` and selecting `Make as Default`. However do note that this will affect other use cases.
 
 <p align="center"><img src="Images/Turn_off_Rectification.png" width=503 /></p>
 
 ## Version History
+
+### 0.2
+
+* TODO: 通过Molden输出分子轨道
+
+### 0.1.1
+
+* Bugfix: OpenBabel reports missing MSVCP100.dll when the runtime is not installed. `vcredist_x86.exe` has been included to the installer.
 
 ### 0.1
 

@@ -8,7 +8,7 @@ from Python_Lib.My_Lib_Stock import *
 
 import PyInstaller.__main__
 
-version = "0.1"
+version = "0.1.1"
 path = 'Pyinstaller_Packing'
 NSIS_executable = r"C:\Program Files (x86)\NSIS\Bin\makensis.exe"
 assert os.path.isfile(NSIS_executable),'You need to install NSIS 3.10 with the installer in Pyinstaller_Packaging'
@@ -21,7 +21,7 @@ if os.path.isfile(os.path.join("Pyinstaller_Packing",installer_filename)):
     os.remove(os.path.join("Pyinstaller_Packing",installer_filename))
 include_all_folder_contents = []
 include_folders = ["Python_Lib", 'xtb-6.7.1','OpenBabel']
-include_files = ["0_xTB_executable_path.txt", "0_Chem3D_Path.txt", "password for MOPAC2012"]
+include_files = ["0_xTB_executable_path.txt", "0_Chem3D_Path.txt", "password for MOPAC2012", "vcredist_x86.exe"]
 
 PyInstaller.__main__.run(["MOPAC2012.py",
                           # "--icon", icon,
@@ -96,9 +96,8 @@ os.chdir("Pyinstaller_Packing")
 with open("NSIS_Script.nsi",'w') as nsis_script:
     nsis_script.write(rf"""Outfile "{installer_filename}"
 SetCompressor /SOLID zlib
-InstallDir $PROGRAMFILES64\MOPAC
+InstallDir "$PROGRAMFILES64\MOPAC"
 
-Page directory
 Page instfiles
 
 Section "PreInstall"
@@ -117,7 +116,18 @@ Section "Install"
     File /r "xTB_in_Chem3D_{version}\Program Files\MOPAC\*"
     CreateDirectory "$SMPROGRAMS\MOPAC"
     CreateShortCut "$SMPROGRAMS\MOPAC\Uninstall.lnk" "$INSTDIR\Uninstaller.exe"
-	WriteUninstaller "$INSTDIR\Uninstaller.exe"  ; Add this line
+	WriteUninstaller "$INSTDIR\Uninstaller.exe"  ; 
+	
+    IfFileExists "$SYSDIR\MSVCP100.dll" 0 installVcredist
+    DetailPrint "vcredist_x86 is already installed."
+    Goto endInstall
+    
+    installVcredist:
+    DetailPrint "vcredist_x86 is not installed. Installing now..."
+    ExecWait '$INSTDIR\vcredist_x86.exe'
+        
+    endInstall:
+    
 SectionEnd
 
 Section "Uninstall"
