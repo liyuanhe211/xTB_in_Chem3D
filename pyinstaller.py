@@ -8,20 +8,39 @@ from Python_Lib.My_Lib_Stock import *
 
 import PyInstaller.__main__
 
-version = "0.1.1"
+version = "0.2"
 path = 'Pyinstaller_Packing'
 NSIS_executable = r"C:\Program Files (x86)\NSIS\Bin\makensis.exe"
-assert os.path.isfile(NSIS_executable),'You need to install NSIS 3.10 with the installer in Pyinstaller_Packaging'
+assert os.path.isfile(NSIS_executable), 'You need to install NSIS 3.10 with the installer in Pyinstaller_Packaging'
 work_path = os.path.join(path, f'temp_{version}')
-output_path = os.path.join(path, "xTB_in_Chem3D_"+version)
+output_path = os.path.join(path, "xTB_in_Chem3D_" + version)
 installer_filename = f"xTB_in_Chem3D {version}.exe"
 if os.path.isdir(output_path):
     shutil.rmtree(output_path)
-if os.path.isfile(os.path.join("Pyinstaller_Packing",installer_filename)):
-    os.remove(os.path.join("Pyinstaller_Packing",installer_filename))
+if os.path.isfile(os.path.join("Pyinstaller_Packing", installer_filename)):
+    os.remove(os.path.join("Pyinstaller_Packing", installer_filename))
 include_all_folder_contents = []
-include_folders = ["Python_Lib", 'xtb-6.7.1','OpenBabel']
+include_folders = ["Python_Lib", 'xtb-6.7.1', 'OpenBabel', "Multiwfn"]
 include_files = ["0_xTB_executable_path.txt", "0_Chem3D_Path.txt", "password for MOPAC2012", "vcredist_x86.exe"]
+
+include_files += [r"C:\Anaconda3\Library\plugins\platforms\qdirect2d.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\platforms\qminimal.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\platforms\qoffscreen.dll",
+                  r"C:\Anaconda3\Library\plugins\platforms\qwebgl.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\platforms\qwindows.dll",
+                  r"C:\Anaconda3\Library\plugins\platformthemes\qxdgdesktopportal.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\iconengines\qsvgicon.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\imageformats\qgif.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\imageformats\qicns.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\imageformats\qico.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\imageformats\qjpeg.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\imageformats\qpdf.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\imageformats\qsvg.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\imageformats\qtga.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\imageformats\qtiff.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\imageformats\qwbmp.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\imageformats\qwebp.dll",
+                  r"C:\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\styles\qwindowsvistastyle.dll"]
 
 PyInstaller.__main__.run(["MOPAC2012.py",
                           # "--icon", icon,
@@ -40,6 +59,18 @@ PyInstaller.__main__.run(["Process_Job.py",
                           '--onefile',
                           '--paths', '.\\Python_Lib',
                           '--clean'])
+
+PyInstaller.__main__.run(["Orbital_Viewer.py",
+                          "--icon", "UI/Icon.png",
+                          "--name", "Orbital_Viewer.exe",
+                          "--workpath", work_path,
+                          "--distpath", output_path,
+                          '--onefile',
+                          '--paths', '.\\Python_Lib',
+                          '--hidden-import', 'PyQt6',
+                          '--exclude-module', 'PyQt5',
+                          '--clean',
+                          "--console"])
 
 
 def copy_folder(src, dst):
@@ -93,7 +124,7 @@ output_path = os.path.realpath(output_path)
 
 os.chdir("Pyinstaller_Packing")
 
-with open("NSIS_Script.nsi",'w') as nsis_script:
+with open("NSIS_Script.nsi", 'w') as nsis_script:
     nsis_script.write(rf"""Outfile "{installer_filename}"
 SetCompressor /SOLID zlib
 InstallDir "$PROGRAMFILES64\MOPAC"
@@ -136,7 +167,6 @@ Section "Uninstall"
     RMDir "$SMPROGRAMS\MOPAC"
 SectionEnd
 """)
-
 
 subprocess.call([NSIS_executable, 'NSIS_Script.nsi'])
 open_explorer_and_select(output_path)
