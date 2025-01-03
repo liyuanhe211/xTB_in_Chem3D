@@ -2,7 +2,7 @@
 
 ## Download
 
-[Download the installer](https://github.com/liyuanhe211/xTB_in_Chem3D/releases/download/0.1.1/xTB_in_Chem3D.0.1.1.exe)
+[Download the installer](https://github.com/liyuanhe211/xTB_in_Chem3D/releases/download/0.2/xTB_in_Chem3D.0.2.exe)
 
 ## Requirement
 
@@ -98,11 +98,12 @@ This function can be disabled by navigating the menu: `File` → `Model Settings
 
 ### 0.2
 
-* TODO: 通过Molden输出分子轨道
+* Show xTB molecular orbitals (for closed shell only). 
+* Adjust MO cube values by multiplying with 0.04, such that the default Chem3D value of 0.002 becomes appropriate.
 
 ### 0.1.1
 
-* Bugfix: OpenBabel reports missing MSVCP100.dll when the runtime is not installed. `vcredist_x86.exe` has been included to the installer.
+* Bugfix: OpenBabel reports missing MSVCP100.dll when the runtime is not installed. `vcredist_x86.exe` has been added to the installer.
 
 ### 0.1
 
