@@ -16,7 +16,9 @@ The program was tested on `Chem3D 22.0.0.22 Ultra (2022)`.
 
 ## Features
 
-**Video demonstration:**
+**Video demonstration** (click on the image):
+
+<p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/yJqBK2eKTwA?si=1duwL7JMNQw9_5jP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></p>
 
 [![Video demonstration](https://img.youtube.com/vi/yJqBK2eKTwA/0.jpg)](https://www.youtube.com/watch?v=yJqBK2eKTwA)
 
