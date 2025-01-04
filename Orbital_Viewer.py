@@ -82,6 +82,9 @@ class MyWidget(Ui_Orbital_Viewer, QtWidgets.QWidget, Qt_Widget_Common_Functions)
         self.multiwfn = _multiwfn_executable
         self.molden_filename = _molden_filename
 
+        self.lineEdit.setReadOnly(True)
+        self.lineEdit.setText(self.molden_filename)
+
         self.pushbutton_mapping = {self.HOMO_pushButton: 0,
                                    self.HOMO1_pushButton: -1,
                                    self.HOMO2_pushButton: -2,

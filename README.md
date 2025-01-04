@@ -101,6 +101,10 @@ This function can be disabled by navigating the menu: `File` → `Model Settings
 
 <p align="center"><img src="Images/Turn_off_Rectification.png" width=503 /></p>
 
+* Isovalue of orbitals
+
+As Chem3D defaults isovalue = 0.002 for the isosurfaces, which is too small for most molecular orbitals, to avoid needing to change this value everytime an orbital is opened, the values of all of the voxels in the cube file were divided by 25 before sending it to ChemDraw.
+
 ## Version History
 
 ### 0.2
