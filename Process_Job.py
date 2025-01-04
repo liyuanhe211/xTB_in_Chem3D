@@ -14,11 +14,11 @@ def call_xtb(mopac_file, output_folder):
     xTB_run_path = filename_remove_append(temp_input_file)
     xyz_filepath = mopac_file + '.xyz'
     out_file = os.path.join(xTB_run_path, 'Run_xTB.out')
-    molden_file = os.path.join(xTB_run_path, 'molden.input')
+    _molden_file = os.path.join(xTB_run_path, 'molden.input')
     xtbopt_xyz_file = os.path.join(xTB_run_path, 'xtbopt.xyz')
 
-    charge = 0
-    multiplicity = 1
+    _charge = 0
+    _multiplicity = 1
     GFN_label = "GFN2"
     GFN = ["--gfn", "2"]
 
@@ -29,7 +29,7 @@ def call_xtb(mopac_file, output_folder):
     is_triplet = "triplet" in command_line
     MS_setting = re.findall(r"ms\=(-*\d+\.*\d*)", command_line)
     if MS_setting:
-        multiplicity = int(abs(float(MS_setting[0])) * 2 + 1)
+        _multiplicity = int(abs(float(MS_setting[0])) * 2 + 1)
     if MS_setting and is_triplet:
         print("\n\nYou should not set MS and TRIPLET at the same time.\n\n")
         sys.exit(1)
@@ -43,7 +43,7 @@ def call_xtb(mopac_file, output_folder):
             GFN = GFN_keywords[i]
 
     if charge_re_ret:
-        charge = int(charge_re_ret[0])
+        _charge = int(charge_re_ret[0])
     regex_pattern = r"^([A-Z][a-z]{0,2})\s+(-*\d+\.\d*)\s+\d+\s+(-*\d+\.\d*)\s+\d+\s+(-*\d+\.\d*)"
     coordinates = []
     elements = []
@@ -54,13 +54,13 @@ def call_xtb(mopac_file, output_folder):
                 elements.append(element_to_num_dict[re_ret[0]])
                 coordinates.append(re_ret)
 
-    total_electron = sum(elements) - charge
+    total_electron = sum(elements) - _charge
     if total_electron % 2 == 1:
-        multiplicity = 2
+        _multiplicity = 2
     if is_triplet:
-        multiplicity = 3
+        _multiplicity = 3
 
-    print(f"Charge: {charge}; Multiplicity: {multiplicity}")
+    print(f"Charge: {_charge}; Multiplicity: {_multiplicity}")
 
     xyz_file_content = f"{len(coordinates)}\n{mopac_file}\n" + "\n".join("\t".join(atom) for atom in coordinates) + '\n'
     with open(xyz_filepath, 'w') as xyz_filepath_object:
@@ -71,7 +71,7 @@ def call_xtb(mopac_file, output_folder):
     os.chdir(xTB_run_path)
 
     print("Running for:", out_file, "...")
-    xTB_command = [xTB_bin, xyz_filepath, '--opt', 'vtight', "--chrg", str(charge), "--alpb", solvent, '--uhf', str(multiplicity - 1), "--molden"] + GFN
+    xTB_command = [xTB_bin, xyz_filepath, '--opt', 'vtight', "--chrg", str(_charge), "--alpb", solvent, '--uhf', str(_multiplicity - 1), "--molden"] + GFN
     print("Command args:", " ".join(xTB_command))
 
     # 不知道如何同时输出到stdout和file stream，反正很快，直接跑两遍算了
@@ -99,18 +99,18 @@ def call_xtb(mopac_file, output_folder):
         raise Exception("Electronic Energy Not Found.")
     out_xyz_filename = os.path.join(output_folder,
                                     input_filename_stem +
-                                    "_[" + GFN_label + " = {:.1f}".format(electronic_energy) + f" kJ_mol]_[Chg {charge}]_[Mult {multiplicity}].xyz")
+                                    "_[" + GFN_label + " = {:.1f}".format(electronic_energy) + f" kJ_mol]_[Chg {_charge}]_[Mult {_multiplicity}].xyz")
 
     with open(out_xyz_filename, 'w') as output_gjf_file_object:
         output_gjf_file_object.write(f"{len(output_coordinate_lines)}\n\n" +
                                      "\n".join(reversed(output_coordinate_lines)))
 
-    out_sdf_filename = filename_replace_last_append(out_xyz_filename, 'sdf')
-    print("Output SDF file:", out_sdf_filename)
+    _out_sdf_filename = filename_replace_last_append(out_xyz_filename, 'sdf')
+    print("Output SDF file:", _out_sdf_filename)
     os.environ['BABEL_DATADIR'] = os.path.join(executable_directory, "OpenBabel", 'data')
-    subprocess.call([os.path.join(executable_directory, "OpenBabel", 'obabel.exe'), '-ixyz', out_xyz_filename, "-osdf", '-O', out_sdf_filename])
+    subprocess.call([os.path.join(executable_directory, "OpenBabel", 'obabel.exe'), '-ixyz', out_xyz_filename, "-osdf", '-O', _out_sdf_filename])
 
-    return out_sdf_filename, out_file, multiplicity, molden_file
+    return _out_sdf_filename, out_file, _multiplicity, _molden_file
 
 
 if __name__ == '__main__':

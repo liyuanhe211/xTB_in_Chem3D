@@ -147,8 +147,8 @@ Section "Install"
     File /r "xTB_in_Chem3D_{version}\Program Files\MOPAC\*"
     CreateDirectory "$SMPROGRAMS\MOPAC"
     CreateShortCut "$SMPROGRAMS\MOPAC\Uninstall.lnk" "$INSTDIR\Uninstaller.exe"
-	WriteUninstaller "$INSTDIR\Uninstaller.exe"  ; 
-	
+    WriteUninstaller "$INSTDIR\Uninstaller.exe"  ; 
+    
     IfFileExists "$SYSDIR\MSVCP100.dll" 0 installVcredist
     DetailPrint "vcredist_x86 is already installed."
     Goto endInstall

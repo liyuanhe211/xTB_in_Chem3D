@@ -148,7 +148,9 @@ class MyWidget(Ui_Orbital_Viewer, QtWidgets.QWidget, Qt_Widget_Common_Functions)
             orbital_designation += f"+{MO_number - 1}"
 
         MO_cube_file = os.path.join(temp_directory, "MOvalue.cub")
-        MO_cube_file_new_name = f"{filename_stem(self.molden_filename)}_[{orbital_designation.replace('l', 'LUMO').replace('h', 'HOMO')}]_{random.randint(10,99)}.cub"
+        MO_cube_file_new_name = f"{filename_stem(self.molden_filename)}_" \
+                                f"[{orbital_designation.replace('l', 'LUMO').replace('h', 'HOMO')}]_" \
+                                f"{random.randint(10,99)}.cub"
         MO_cube_file_new_name = os.path.join(temp_directory, MO_cube_file_new_name)
 
         os.chdir(temp_directory)
