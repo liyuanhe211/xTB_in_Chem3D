@@ -97,7 +97,7 @@ This is not an issue. The bond order between two atoms is an artificial concept 
 
 This is not a problem with the input file generation or xTB calculation. The reason is Chem3D have an automatic rectification feature that adds hydrogen atoms where it deems appropriate. The extra hydrogen is only added when the output file is opened in Chem3D. This only happens to "unusual" structures like metal complexes, radicals, etc. 
 
-This function can be disabled by navigating the menu: `File` → `Model Settings` → `Model Building`  → `Rectify` and selecting `Make as Default`. However do note that this will affect other use cases.
+This function can be disabled by navigating the menu: `File` → `Model Settings` → `Model Building`  → `Rectify` and selecting `Make as Default`. However do note that **this will affect other use cases**:
 
 <p align="center"><img src="Images/Turn_off_Rectification.png" width=503 /></p>
 
