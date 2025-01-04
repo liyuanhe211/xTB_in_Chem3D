@@ -10,7 +10,7 @@ You need to have `MOPAC Interface` in the `Calculations` menu of your ChemDraw.
 
 <p align="center"><img src="Images/UltraCheck.png" width=203 /></p>
 
-If you can't find it, you need to install the "**Ultra**" version of Chem3D. The other versions don't have the MOPAC interface. 
+If you don't have `MOPAC Interface` in the `Calculations` menu, you need to install the "**Ultra**" version of Chem3D. The other versions don't have the MOPAC interface. 
 
 The program was tested on `Chem3D 22.0.0.22 Ultra (2022)`.
 
