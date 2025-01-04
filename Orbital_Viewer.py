@@ -5,6 +5,7 @@ __author__ = 'LiYuanhe'
 # parent_path = str(pathlib.Path(__file__).parent.resolve())
 # sys.path.insert(0,parent_path)
 import os
+import random
 import sys
 
 from Python_Lib.My_Lib_PyQt6 import *
@@ -28,13 +29,13 @@ if __name__ == '__main__':
     from UI.Orbital_Viewer_UI import Ui_Orbital_Viewer
 
 
-def MO_energy_from_molden(molden_file):
-    with open(molden_file) as molden_file_content:
+def MO_energy_from_molden(_molden_file):
+    with open(_molden_file) as molden_file_content:
         molden_file_content = molden_file_content.read().splitlines()
 
     HOMOs, LUMOs = [], []
     for count, line in enumerate(molden_file_content):
-        if re_ret := re.findall("Ene=\s+(-*\d+\.\d+E*-*\d+)", line):
+        if re_ret := re.findall(r"Ene=\s+(-*\d+\.\d+E*-*\d+)", line):
             re_ret = float(re_ret[0]) * 2625.49962 / 96.484
             re_ret = f"{re_ret:.1f} eV"
             occupied = float(molden_file_content[count + 2].replace("Occup=", ""))
@@ -43,9 +44,9 @@ def MO_energy_from_molden(molden_file):
             elif occupied < 0.5:
                 LUMOs.append(re_ret)
             else:
-                print("HOMOs:",HOMOs)
-                print("LUMOs:",LUMOs)
-                print("Occupied:",occupied)
+                print("HOMOs:", HOMOs)
+                print("LUMOs:", LUMOs)
+                print("Occupied:", occupied)
                 raise Exception("Error in molden occupation number.")
     return HOMOs, LUMOs
 
@@ -54,54 +55,22 @@ def MO_energy_from_molden(molden_file):
 # input("Paused,")
 
 
-def run_for_MO(_molden_file, MO_number):
+def process_is_CPU_idle(pid, interval=1.0):
     """
 
-    :param _molden_file:
-    :param MO_number: HOMO is 0, LUMO is 1, LUMO+1 = 2
-    :return:
+    :param pid:
+    :param interval: sampling time, seconds
+    :return: True if is idle, False if not, None if pid not exist
     """
-
-    temp_directory = filename_parent(_molden_file)
-    orbital_designation = "l" if MO_number > 0 else "h"
-    if MO_number < 0:
-        orbital_designation += str(MO_number)
-    elif MO_number > 1:
-        orbital_designation += f"+{MO_number - 1}"
-
-    MO_cube_file = os.path.join(temp_directory, "MOvalue.cub")
-    MO_cube_file_new_name = f"{filename_stem(_molden_file)}_{orbital_designation.replace('l', 'LUMO').replace('h', 'HOMO')}.cub"
-    MO_cube_file_new_name = os.path.join(temp_directory, MO_cube_file_new_name)
-    os.chdir(temp_directory)
-    script = f"""5
-4
-{orbital_designation}
-2
-6
-25
-2
-
-"""
-    # Create your process
-    print(os.path.isfile(multiwfn_executable))
-    print(os.path.isfile(_molden_file))
-    print(" ".join([multiwfn_executable, _molden_file]))
-    subprocess.run([multiwfn_executable, _molden_file],
-                   input=script, text=True)
-    # print(os.getcwd())
-    # print(MO_cube_file)
-    # print(os.path.isfile(MO_cube_file))
-    # input("Paused")
-    # # Pass string as input and get output
-    # process.communicate(input=script.encode())
-    # process.wait()
-
-    if os.path.isfile(MO_cube_file):
-        if os.path.isfile(MO_cube_file_new_name):
-            os.remove(MO_cube_file_new_name)
-        shutil.move(MO_cube_file, MO_cube_file_new_name)
-    MO_cube_file = MO_cube_file_new_name
-    open_file_with_Chem3D(MO_cube_file)
+    import psutil
+    try:
+        process = psutil.Process(pid)
+        cpu_percent = process.cpu_percent(interval=interval)
+        if cpu_percent == 0:
+            return True
+        return False
+    except psutil.NoSuchProcess:
+        return None
 
 
 class MyWidget(Ui_Orbital_Viewer, QtWidgets.QWidget, Qt_Widget_Common_Functions):
@@ -167,10 +136,70 @@ class MyWidget(Ui_Orbital_Viewer, QtWidgets.QWidget, Qt_Widget_Common_Functions)
             energy = "  [{:>8}]".format(energy)
             pushbutton.setText("{:<7}".format(pushbutton.text().strip()) + energy)
 
+    def launch(self, MO_number):
+        temp_directory = filename_parent(self.molden_filename)
+        orbital_designation = "l" if MO_number > 0 else "h"
+        if MO_number < 0:
+            orbital_designation += str(MO_number)
+        elif MO_number > 1:
+            orbital_designation += f"+{MO_number - 1}"
+
+        MO_cube_file = os.path.join(temp_directory, "MOvalue.cub")
+        MO_cube_file_new_name = f"{filename_stem(self.molden_filename)}_[{orbital_designation.replace('l', 'LUMO').replace('h', 'HOMO')}]_{random.randint(10,99)}.cub"
+        MO_cube_file_new_name = os.path.join(temp_directory, MO_cube_file_new_name)
+
+        os.chdir(temp_directory)
+
+        self.process = QProcess()
+        self.process.setWorkingDirectory(temp_directory)
+        self.process.start(self.multiwfn, [self.molden_filename])
+        connect_once(self.process.readyReadStandardOutput, lambda process=self.process: self.write_output(self.process))
+        connect_once(self.process.readyReadStandardError, lambda process=self.process: self.write_output(self.process))
+
+        commands = ['5', '4', orbital_designation, '2', '6', '25', '2', ""]
+        for command in commands:
+            self.write_input(command)
+            Application.processEvents()
+
+        if os.path.isfile(MO_cube_file):
+            if os.path.isfile(MO_cube_file_new_name):
+                os.remove(MO_cube_file_new_name)
+            shutil.move(MO_cube_file, MO_cube_file_new_name)
+        MO_cube_file = MO_cube_file_new_name
+        open_file_with_Chem3D(MO_cube_file)
+
     def MO_pushbutton_pressed(self):
         event_emitter = self.sender()
         print("Running for orbital", self.pushbutton_mapping[event_emitter], 'in file', self.molden_filename)
-        run_for_MO(self.molden_filename, self.pushbutton_mapping[event_emitter])
+        self.launch(self.pushbutton_mapping[event_emitter])
+        # run_for_MO(self.molden_filename, self.pushbutton_mapping[event_emitter])
+
+    def write_text(self, text):
+        # Move cursor to end before inserting new text
+        cursor = self.output_textEdit.textCursor()
+        cursor.movePosition(cursor.MoveOperation.End)
+        self.output_textEdit.setTextCursor(cursor)
+        self.output_textEdit.insertPlainText(text)
+        cursor.movePosition(cursor.MoveOperation.End)
+        self.output_textEdit.setTextCursor(cursor)
+
+        vertical_scroll_to_end(self.output_textEdit)
+
+    def write_output(self, process):
+
+        text = bytes(process.readAllStandardOutput()).decode('gbk')
+        text += bytes(process.readAllStandardError()).decode('gbk')
+        self.write_text(text)
+
+    def write_input(self, text):
+        self.wait_idle()
+        self.write_text("\n\n>>> " + text + '\n\n\n')
+        self.process.writeData(bytearray(text + "\n", encoding='gbk'))
+
+    def wait_idle(self, sampling_interval=0.1):
+        while process_is_CPU_idle(self.process.processId(), interval=sampling_interval) is False:
+            Application.processEvents()
+            time.sleep(0.1)
 
 
 if __name__ == '__main__':
