@@ -16,11 +16,13 @@ The program was tested on `Chem3D 22.0.0.22 Ultra (2022)`.
 
 ## Features
 
-**Video demonstration** (click on the image):
+**Video demonstration** ([link](https://www.youtube.com/watch?v=yJqBK2eKTwA)):
 
-<p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/yJqBK2eKTwA?si=1duwL7JMNQw9_5jP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></p>
-
-[![Video demonstration](https://img.youtube.com/vi/yJqBK2eKTwA/0.jpg)](https://www.youtube.com/watch?v=yJqBK2eKTwA)
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=yJqBK2eKTwA">
+    <img src="https://img.youtube.com/vi/yJqBK2eKTwA/0.jpg" alt="Video demonstration">
+  </a>
+</p>
 
 The `MM2 Optimization` tool in Chem3D is probably the most wildly used computational tool among chemists. However, it's often incorrectly interpreted by those who are not experts in computational chemistry, leading to misconceptions about its energy implications. Many fail to acknowledge its constraints, such as its inability to accommodate topology changes and the absence of parameters for different atom types.
 
