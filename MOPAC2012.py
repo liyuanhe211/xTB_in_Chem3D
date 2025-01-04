@@ -43,8 +43,8 @@ random_int = str(random.randint(100, 900))
 if __name__ == '__main__':
     input_filepath = filename_parent(sys.argv[1])
     input_filename_stem = filename_stem(sys.argv[1])
-    input_filename_stem = re.sub(r"\[.+\]", "", input_filename_stem)
-    temp_input_file = os.path.join(temp_directory, 'temp_xTB_in_Chem3D_[' + input_filename_stem + "]_" + readable_timestamp() +
+    input_filename_stem = re.sub(r"\[.+", "", input_filename_stem)
+    temp_input_file = os.path.join(temp_directory, input_filename_stem + "_" + readable_timestamp() +
                                    "_" + random_int + '.mop')
 
     with open(sys.argv[1]) as input_file:
@@ -59,7 +59,6 @@ if __name__ == '__main__':
     if os.path.isfile("Process_Job.exe"):
         # 因为Process_Job.exe被打包后，是在TEMP里执行，所以__file__不对了
         full_executable_path = os.path.realpath("Process_Job.exe")
-        # Construct the command to open cmd.exe and run your executable
         command = f'start /B start cmd.exe /k ""{full_executable_path}" "{temp_input_file}" "{input_filename_stem}" "{full_executable_path}""'
         print("Running CMD command:", command)
         os.system(command)
