@@ -148,13 +148,12 @@ if __name__ == '__main__':
         orbital_viewer_command = ["python ", orbital_viewer_command[:-4] + ".py"] + [multiwfn_executable, new_molden_file]
     else:
         # 用start cmd /k后面的命令必须套一层额外的"" 并且作为一个独立的参数
-        orbital_viewer_command = f'""{orbital_viewer_command}" "{multiwfn_executable}" "{new_molden_file}""'
-        orbital_viewer_command = 'start cmd.exe /k ' + orbital_viewer_command
+        # orbital_viewer_command = f'""{orbital_viewer_command}" "{multiwfn_executable}" "{new_molden_file}""'
+        # orbital_viewer_command = 'start cmd.exe /k ' + orbital_viewer_command
+        orbital_viewer_command = [orbital_viewer_command, multiwfn_executable, new_molden_file]
 
     if multiplicity == 1:
         print("Launching orbital viewer...")
         print(orbital_viewer_command)
-        if isinstance(orbital_viewer_command,list):
-            subprocess.call(orbital_viewer_command)
-        else:
-            subprocess.call(orbital_viewer_command,shell=True)
+        subprocess.call(orbital_viewer_command)
+        # subprocess.call(orbital_viewer_command, shell=True)

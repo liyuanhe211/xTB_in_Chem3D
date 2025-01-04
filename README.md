@@ -33,6 +33,8 @@ This program integrates xTB optimization into Chem3D by repurposing the MOPAC me
 
 <p align="center"><img src="Images/Output.png" width=503 /></p>
 
+* A panel featuring push buttons, each representing the energy levels of the frontier orbitals, will appear. By clicking on any of these buttons, and wait a few seconds (the progress will be shown in the accompanying CMD window), the corresponding Molecular Orbital can be displayed within Chem3D.
+
 * Video demonstration:
 
 https://github.com/user-attachments/assets/5a562413-aa36-4d7d-9a75-e1283dfdc2e4
