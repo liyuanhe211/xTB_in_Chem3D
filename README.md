@@ -72,14 +72,14 @@ To select different models, use the keywords `GFN1`, `GFN0`, or `GFNFF` in the g
 
 If xTB terminates unexpectedly, the program will display `xTB calculation failed.` This indicates an issue within the xTB program. It is not a problem with the interface.
 
-## File locations
+## File location
 
-All input and output files are stored in the `Document/xTB_in_Chem3D` folder within the user directory.
+All input and output files are stored in the `Document/xTB_in_Chem3D` folder within the windows user directory, for example, `C:\Users\LiYuanhe\Documents\xTB_in_Chem3D`. You may wish to periodically clean the folder if you generate lots of orbital cube files.
 
 ## Uninstall
 
 * Use the included uninstaller in `C:\Program files\MOPAC`
-* Alternatively, delete the `C:\Program files\MOPAC` folder manually.
+* Alternatively, just delete the `C:\Program files\MOPAC` folder manually.
 
 ## Known Issue
 
@@ -95,7 +95,7 @@ This is not an issue. The bond order between two atoms is an artificial concept 
 
 * Extra hydrogen atoms when opening output files
 
-Chem3D have an automatic rectification feature that adds hydrogen atoms where it deems appropriate, resulting in the display of extra hydrogens where they don't actually exist. This only happens to structures like metal complexes, radicals, etc. 
+This is not a problem with the input file generation or xTB calculation. The reason is Chem3D have an automatic rectification feature that adds hydrogen atoms where it deems appropriate. The extra hydrogen is only added when the output file is opened in Chem3D. This only happens to "unusual" structures like metal complexes, radicals, etc. 
 
 This function can be disabled by navigating the menu: `File` → `Model Settings` → `Model Building`  → `Rectify` and selecting `Make as Default`. However do note that this will affect other use cases.
 
