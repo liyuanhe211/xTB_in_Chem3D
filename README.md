@@ -16,6 +16,10 @@ The program was tested on `Chem3D 22.0.0.22 Ultra (2022)`.
 
 ## Features
 
+**Video demonstration:**
+
+[![Video demonstration](https://img.youtube.com/vi/yJqBK2eKTwA/0.jpg)](https://www.youtube.com/watch?v=yJqBK2eKTwA)
+
 The `MM2 Optimization` tool in Chem3D is probably the most wildly used computational tool among chemists. However, it's often incorrectly interpreted by those who are not experts in computational chemistry, leading to misconceptions about its energy implications. Many fail to acknowledge its constraints, such as its inability to accommodate topology changes and the absence of parameters for different atom types.
 
 This program integrates xTB optimization into Chem3D by repurposing the MOPAC menu. Upon the completion of the optimization process, the results, including the electronic energy, are displayed in Chem3D. This integration facilitates the use of xTB with minimal learning curve, and it is hoped to replace an obsolete force field that's over 50-years-old.
@@ -33,11 +37,8 @@ This program integrates xTB optimization into Chem3D by repurposing the MOPAC me
 
 <p align="center"><img src="Images/Output.png" width=503 /></p>
 
-* A panel featuring push buttons, each representing the energy levels of the frontier orbitals, will appear. By clicking on any of these buttons, and wait a few seconds (the progress will be shown in the accompanying CMD window), the corresponding Molecular Orbital can be displayed within Chem3D.
+* A panel will appear after the optimization featuring push buttons for frontier molecular orbital, each with its energy level. By clicking on any of these buttons, and wait a few seconds (the progress will be shown in the text output widget), the corresponding molecular orbital can be displayed within Chem3D.
 
-* Video demonstration:
-
-https://github.com/user-attachments/assets/5a562413-aa36-4d7d-9a75-e1283dfdc2e4
 
 ## Advanced options
 
