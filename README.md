@@ -105,7 +105,7 @@ This function can be disabled by navigating the menu: `File` → `Model Settings
 
 This program relies on ChemOffice, [xTB](https://xtb-docs.readthedocs.io/en/latest/) and [Multiwfn](https://sobereva.com/multiwfn). Use the link to access the original program, reference information, and manuals. 
 
-While it isn't necessary to cite this repository in your publications, it is essential to acknowledge the xTB (and Multiwfn programs, if the MO function is used). However, given that this is only a toy, it is unlikely to produce results warranting publication, unless in subjects such as chemical education.
+While it is not required to cite this repository in your publications, it is essential to acknowledge the xTB (and Multiwfn programs, if the MO function is used). However, given that this is only a toy, it is unlikely to produce results warranting publication, unless in subjects such as chemical education.
 
 ## Version History
 
