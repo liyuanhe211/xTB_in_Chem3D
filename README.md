@@ -6,6 +6,8 @@
 
 ## Requirement
 
+Confirm that you do not need run `MOPAC` through Chem3D.
+
 You need to have `MOPAC Interface` in the `Calculations` menu of your ChemDraw. 
 
 <p align="center"><img src="Images/UltraCheck.png" width=203 /></p>
