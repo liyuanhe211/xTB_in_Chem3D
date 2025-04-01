@@ -4,6 +4,7 @@ __author__ = 'LiYuanhe'
 # import pathlib
 # parent_path = str(pathlib.Path(__file__).parent.resolve())
 # sys.path.insert(0,parent_path)
+import copy
 import os
 import random
 import sys
@@ -30,7 +31,7 @@ if __name__ == '__main__':
 
 
 def MO_energy_from_molden(_molden_file):
-    with open(_molden_file) as molden_file_content:
+    with open(_molden_file, encoding='utf-8', errors='ignore') as molden_file_content:
         molden_file_content = molden_file_content.read().splitlines()
 
     HOMOs, LUMOs = [], []
@@ -74,13 +75,15 @@ def process_is_CPU_idle(pid, interval=1.0):
 
 
 class MyWidget(Ui_Orbital_Viewer, QtWidgets.QWidget, Qt_Widget_Common_Functions):
-    def __init__(self, _multiwfn_executable, _molden_filename):
+    def __init__(self, _multiwfn_executable, _molden_filename, _out_sdf_filename, _chem3D_path):
         super(self.__class__, self).__init__()
 
         self.setupUi(self)
 
         self.multiwfn = _multiwfn_executable
         self.molden_filename = _molden_filename
+        self.out_sdf_filename = _out_sdf_filename
+        self.chem3D_path = _chem3D_path
 
         self.lineEdit.setReadOnly(True)
         self.lineEdit.setText(self.molden_filename)
@@ -120,12 +123,16 @@ class MyWidget(Ui_Orbital_Viewer, QtWidgets.QWidget, Qt_Widget_Common_Functions)
 
         for pushbutton in self.pushbutton_mapping:
             connect_once(pushbutton, self.MO_pushbutton_pressed)
+        connect_once(self.reload_output_pushButton, self.open_sdf_file_again)
 
         self.show_energies()
 
         self.show()
 
         self.center_the_widget()
+
+    def open_sdf_file_again(self):
+        open_file_with_Chem3D(self.out_sdf_filename, self.chem3D_path)
 
     def show_energies(self):
         HOMOs, LUMOs = MO_energy_from_molden(self.molden_filename)
@@ -150,7 +157,7 @@ class MyWidget(Ui_Orbital_Viewer, QtWidgets.QWidget, Qt_Widget_Common_Functions)
         MO_cube_file = os.path.join(temp_directory, "MOvalue.cub")
         MO_cube_file_new_name = f"{filename_stem(self.molden_filename)}_" \
                                 f"[{orbital_designation.replace('l', 'LUMO').replace('h', 'HOMO')}]_" \
-                                f"{random.randint(10,99)}.cub"
+                                f"{random.randint(10, 99)}.cub"
         MO_cube_file_new_name = os.path.join(temp_directory, MO_cube_file_new_name)
 
         os.chdir(temp_directory)
@@ -171,7 +178,7 @@ class MyWidget(Ui_Orbital_Viewer, QtWidgets.QWidget, Qt_Widget_Common_Functions)
                 os.remove(MO_cube_file_new_name)
             shutil.move(MO_cube_file, MO_cube_file_new_name)
         MO_cube_file = MO_cube_file_new_name
-        open_file_with_Chem3D(MO_cube_file)
+        open_file_with_Chem3D(MO_cube_file, self.chem3D_path)
 
     def MO_pushbutton_pressed(self):
         event_emitter = self.sender()
@@ -209,10 +216,13 @@ class MyWidget(Ui_Orbital_Viewer, QtWidgets.QWidget, Qt_Widget_Common_Functions)
 
 if __name__ == '__main__':
     print("Running:", " ".join(sys.argv))
+    system_args = copy.copy(sys.argv)
     if sys.argv[0].lower().endswith('python') or sys.argv[0].lower().endswith('python.exe') or sys.argv[0].lower().endswith('cmd'):
-        multiwfn_executable, molden_file = sys.argv[2:4]
-    else:
-        multiwfn_executable, molden_file = sys.argv[1:3]
-    gui = MyWidget(multiwfn_executable, molden_file)
+        system_args = system_args[1:]
+    executable_directory = filename_parent(system_args[0])
+    multiwfn_executable, molden_file, out_sdf_filename = system_args[1:4]
+    chem3D_path = open(os.path.join(executable_directory, "0_Chem3D_Path.txt")).read().splitlines()[0]
+
+    gui = MyWidget(multiwfn_executable, molden_file, out_sdf_filename, chem3D_path)
     gui.show()
     sys.exit(Application.exec())

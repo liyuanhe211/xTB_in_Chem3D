@@ -47,13 +47,13 @@ if __name__ == '__main__':
     temp_input_file = os.path.join(temp_directory, input_filename_stem + "_" + readable_timestamp() +
                                    "_" + random_int + '.mop')
 
-    with open(sys.argv[1]) as input_file:
+    with open(sys.argv[1], encoding='utf-8', errors='ignore') as input_file:
         log_file_path = os.path.join(filename_parent(temp_directory), "0_xTB_in_Chem3D.log")
-        with open(log_file_path, 'a') as input_file_log:
+        with open(log_file_path, 'a', encoding='utf-8', errors='ignore') as input_file_log:
             input_file_content = input_file.read()
             input_file_log.write(input_file_content + '\n-------------\n')
 
-    with open(temp_input_file, 'w') as temp_input_file_object:
+    with open(temp_input_file, 'w', encoding='utf-8', errors='ignore') as temp_input_file_object:
         temp_input_file_object.write(input_file_content)
 
     if os.path.isfile("Process_Job.exe"):

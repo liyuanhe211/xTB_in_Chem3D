@@ -43,11 +43,15 @@ This program integrates xTB optimization into Chem3D by repurposing the MOPAC me
 
 * A panel will appear after the optimization featuring push buttons for frontier molecular orbital, each with its energy level. By clicking on any of these buttons, and wait a few seconds (the progress will be shown in the text output widget), the corresponding molecular orbital can be displayed within Chem3D.
 
-## Advanced options
+## Options
 
 Prior to running the job, specific keywords can be added to the "General" input tab of the MOPAC interface. For instance, the keyword shown below sets the charge to -5, the multiplicity to quartet, and use the GFN1 level of calculation:
 
 <p align="center"><img src="Images/Custom_Input.png" width=503 /></p>
+
+### Single point calculation
+
+By default, the program runs an xTB optimization. By adding `SP` to the keyword, the program runs a single point calculation, which could be useful if you wish to obtain information for certain geometries.
 
 ### Setting charge
 
@@ -84,9 +88,7 @@ All input and output files are stored in the `Document/xTB_in_Chem3D` folder wit
 
 * Chem3D fails to open the output file after calculation completion:
 
-If this issue only occurs occasionally, it may be due to Windows' slow response to the "bring window to front" command. The output file's path will be shown in the command line window, allowing you to open it manually.
-
-If this problem persists, consider using a screen recording software like `ocam` to record the issue and report it as a bug.
+If this issue only occurs occasionally, it may be due to Windows' slow response to the "bring window to front" command. Click the `Reload Optimized Structure` button in the Orbital Viewer window.
 
 * Incorrect bonding topology:
 
@@ -105,6 +107,16 @@ This function can be disabled by navigating the menu: `File` → `Model Settings
 As Chem3D defaults isovalue = 0.002 for the isosurfaces, which is too small for most molecular orbitals, to avoid needing to change this value everytime an orbital is opened, the values of all of the voxels in the cube file were divided by 25 before sending it to ChemDraw.
 
 ## Version History
+
+### 0.4
+
+* TODO: Try to solve the Ctrl+O non-focus issue.
+
+### 0.3
+
+* Support single point calculation (without optimization) with `SP` keyword.
+* Add `Load Output Structure in Chem3D` button in the Orbital Viewer window.
+* Bugfix: Encoding problem when opening files.
 
 ### 0.2
 

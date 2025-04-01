@@ -8,7 +8,7 @@ from Python_Lib.My_Lib_Stock import *
 
 import PyInstaller.__main__
 
-version = "0.2"
+version = "0.3"
 path = 'Pyinstaller_Packing'
 NSIS_executable = r"C:\Program Files (x86)\NSIS\Bin\makensis.exe"
 assert os.path.isfile(NSIS_executable), 'You need to install NSIS 3.10 with the installer in Pyinstaller_Packaging'
