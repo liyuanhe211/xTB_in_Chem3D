@@ -2,7 +2,7 @@
 
 ## Download
 
-[Download the installer](https://github.com/liyuanhe211/xTB_in_Chem3D/releases/download/0.2/xTB_in_Chem3D.0.2.exe)
+[Download the installer](https://github.com/liyuanhe211/xTB_in_Chem3D/releases/download/0.3/xTB_in_Chem3D.0.3.exe)
 
 ## Requirement
 
