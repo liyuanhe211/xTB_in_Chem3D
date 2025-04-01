@@ -6,6 +6,8 @@
 
 ## Requirement
 
+Confirm that you do not need run `MOPAC` through Chem3D.
+
 You need to have `MOPAC Interface` in the `Calculations` menu of your ChemDraw. 
 
 <p align="center"><img src="Images/UltraCheck.png" width=203 /></p>
@@ -105,6 +107,12 @@ This function can be disabled by navigating the menu: `File` → `Model Settings
 * Isovalue of orbitals
 
 As Chem3D defaults isovalue = 0.002 for the isosurfaces, which is too small for most molecular orbitals, to avoid needing to change this value everytime an orbital is opened, the values of all of the voxels in the cube file were divided by 25 before sending it to ChemDraw.
+
+## Dependencies and Citation
+
+This program relies on ChemOffice, [xTB](https://xtb-docs.readthedocs.io/en/latest/) and [Multiwfn](https://sobereva.com/multiwfn). The latter two are already included in the installer.
+
+While it is not required to cite this repository in your publications, it is essential to acknowledge the xTB (and Multiwfn programs, if the MO function is used). However, given that this is only a toy, it is unlikely to produce results warranting publication, unless in subjects such as chemical education.
 
 ## Version History
 
